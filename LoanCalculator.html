@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Loan Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .calculator-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2e8b57;
+        }
+
+        .interest-type {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-group:hover {
+            background: #f8f9fa;
+        }
+
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .radio-group.active {
+            border-color: #2e8b57;
+            background: #f0f8f0;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2e8b57;
+            margin-bottom: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #2e8b57;
+            font-size: 1.1em;
+        }
+
+        .comparison-section {
+            grid-column: 1 / -1;
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #ffeaa7;
+            margin-top: 20px;
+        }
+
+        .comparison-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .comparison-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .loan-examples {
+            grid-column: 1 / -1;
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #90caf9;
+            margin-top: 20px;
+        }
+
+        .examples-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #1565c0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .example-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #1565c0;
+            margin-bottom: 8px;
+        }
+
+        .example-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Farmer Loan Calculator</h1>
+            <p>Calculate loan payments for agricultural financing with simple & compound interest</p>
+        </div>
+
+        <div class="main-content">
+            <div class="calculator-section">
+                <h2 style="margin-bottom: 20px; color: #2e8b57;">Loan Details</h2>
+                
+                <div class="form-group">
+                    <label for="loanAmount">Loan Amount (₹)</label>
+                    <input type="number" id="loanAmount" placeholder="Enter loan amount" value="500000">
+                </div>
+
+                <div class="form-group">
+                    <label for="interestRate">Annual Interest Rate (%)</label>
+                    <input type="number" id="interestRate" step="0.01" placeholder="Enter interest rate" value="12">
+                </div>
+
+                <div class="form-group">
+                    <label for="loanTerm">Loan Term</label>
+                    <input type="number" id="loanTerm" placeholder="Enter loan term" value="3">
+                </div>
+
+                <div class="form-group">
+                    <label for="termType">Term Type</label>
+                    <select id="termType">
+                        <option value="years">Years</option>
+                        <option value="months">Months</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Interest Type</label>
+                    <div class="interest-type">
+                        <div class="radio-group active" onclick="selectInterestType('simple')">
+                            <input type="radio" id="simple" name="interestType" value="simple" checked>
+                            <label for="simple">Simple Interest</label>
+                        </div>
+                        <div class="radio-group" onclick="selectInterestType('compound')">
+                            <input type="radio" id="compound" name="interestType" value="compound">
+                            <label for="compound">Compound Interest</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="compoundFrequency" style="display: none;">
+                    <label for="frequency">Compounding Frequency</label>
+                    <select id="frequency">
+                        <option value="1">Annually</option>
+                        <option value="2">Semi-annually</option>
+                        <option value="4">Quarterly</option>
+                        <option value="12">Monthly</option>
+                    </select>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateLoan()">Calculate Loan</button>
+            </div>
+
+            <div class="results-section">
+                <h2 style="margin-bottom: 20px; color: #2e8b57;">Results</h2>
+                <div id="results">
+                    <div class="result-card">
+                        <div class="result-title">Enter loan details to see calculations</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-section" id="comparisonSection" style="display: none;">
+                <div class="comparison-title">📊 Simple vs Compound Interest Comparison</div>
+                <div class="comparison-grid" id="comparisonGrid"></div>
+            </div>
+
+            <div class="loan-examples">
+                <div class="examples-title">🚜 Common Agricultural Loan Examples</div>
+                <div class="examples-grid">
+                    <div class="example-card" onclick="setExample(500000, 12, 3, 'years')">
+                        <div class="example-title">Crop Loan</div>
+                        <div class="example-details">₹5,00,000 at 12% for 3 years</div>
+                    </div>
+                    <div class="example-card" onclick="setExample(1000000, 10, 5, 'years')">
+                        <div class="example-title">Equipment Purchase</div>
+                        <div class="example-details">₹10,00,000 at 10% for 5 years</div>
+                    </div>
+                    <div class="example-card" onclick="setExample(200000, 15, 18, 'months')">
+                        <div class="example-title">Seasonal Loan</div>
+                        <div class="example-details">₹2,00,000 at 15% for 18 months</div>
+                    </div>
+                    <div class="example-card" onclick="setExample(1500000, 8, 7, 'years')">
+                        <div class="example-title">Land Purchase</div>
+                        <div class="example-details">₹15,00,000 at 8% for 7 years</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectInterestType(type) {
+            const radioGroups = document.querySelectorAll('.radio-group');
+            radioGroups.forEach(group => group.classList.remove('active'));
+            
+            const selectedGroup = document.querySelector(input[value="${type}"]).closest('.radio-group');
+            selectedGroup.classList.add('active');
+            
+            document.querySelector(input[value="${type}"]).checked = true;
+            
+            const compoundFrequency = document.getElementById('compoundFrequency');
+            compoundFrequency.style.display = type === 'compound' ? 'block' : 'none';
+        }
+
+        function setExample(amount, rate, term, termType) {
+            document.getElementById('loanAmount').value = amount;
+            document.getElementById('interestRate').value = rate;
+            document.getElementById('loanTerm').value = term;
+            document.getElementById('termType').value = termType;
+            calculateLoan();
+        }
+
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const term = parseFloat(document.getElementById('loanTerm').value);
+            const termType = document.getElementById('termType').value;
+            const interestType = document.querySelector('input[name="interestType"]:checked').value;
+            const frequency = parseInt(document.getElementById('frequency').value);
+
+            if (!principal || !rate || !term) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const timeInYears = termType === 'months' ? term / 12 : term;
+            
+            let results = {};
+            
+            if (interestType === 'simple') {
+                results = calculateSimpleInterest(principal, rate, timeInYears);
+            } else {
+                results = calculateCompoundInterest(principal, rate, timeInYears, frequency);
+            }
+
+            displayResults(results, interestType);
+            showComparison(principal, rate, timeInYears, frequency);
+        }
+
+        function calculateSimpleInterest(principal, rate, time) {
+            const interest = principal * rate * time;
+            const totalAmount = principal + interest;
+            const monthlyPayment = totalAmount / (time * 12);
+
+            return {
+                principal: principal,
+                interest: interest,
+                totalAmount: totalAmount,
+                monthlyPayment: monthlyPayment,
+                effectiveRate: rate * 100
+            };
+        }
+
+        function calculateCompoundInterest(principal, rate, time, frequency) {
+            const amount = principal * Math.pow(1 + (rate / frequency), frequency * time);
+            const interest = amount - principal;
+            const monthlyPayment = amount / (time * 12);
+
+            return {
+                principal: principal,
+                interest: interest,
+                totalAmount: amount,
+                monthlyPayment: monthlyPayment,
+                effectiveRate: (Math.pow(1 + (rate / frequency), frequency) - 1) * 100
+            };
+        }
+
+        function displayResults(results, type) {
+            const resultsDiv = document.getElementById('results');
+            const typeTitle = type === 'simple' ? 'Simple Interest' : 'Compound Interest';
+            
+            resultsDiv.innerHTML = `
+                <div class="result-card">
+                    <div class="result-title">${typeTitle} Calculation</div>
+                    <div class="result-item">
+                        <span class="result-label">Principal Amount:</span>
+                        <span class="result-value">₹${results.principal.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Interest Amount:</span>
+                        <span class="result-value">₹${results.interest.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Amount:</span>
+                        <span class="result-value">₹${results.totalAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Payment:</span>
+                        <span class="result-value">₹${results.monthlyPayment.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Effective Annual Rate:</span>
+                        <span class="result-value">${results.effectiveRate.toFixed(2)}%</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showComparison(principal, rate, time, frequency) {
+            const simpleResults = calculateSimpleInterest(principal, rate, time);
+            const compoundResults = calculateCompoundInterest(principal, rate, time, frequency);
+            
+            const comparisonSection = document.getElementById('comparisonSection');
+            const comparisonGrid = document.getElementById('comparisonGrid');
+            
+            comparisonSection.style.display = 'block';
+            
+            comparisonGrid.innerHTML = `
+                <div class="comparison-card">
+                    <div class="result-title">Simple Interest</div>
+                    <div class="result-item">
+                        <span class="result-label">Interest:</span>
+                        <span class="result-value">₹${simpleResults.interest.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Amount:</span>
+                        <span class="result-value">₹${simpleResults.totalAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Payment:</span>
+                        <span class="result-value">₹${simpleResults.monthlyPayment.toLocaleString('en-IN')}</span>
+                    </div>
+                </div>
+                <div class="comparison-card">
+                    <div class="result-title">Compound Interest</div>
+                    <div class="result-item">
+                        <span class="result-label">Interest:</span>
+                        <span class="result-value">₹${compoundResults.interest.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Amount:</span>
+                        <span class="result-value">₹${compoundResults.totalAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Payment:</span>
+                        <span class="result-value">₹${compoundResults.monthlyPayment.toLocaleString('en-IN')}</span>
+                    </div>
+                </div>
+            `;
+
+            const difference = compoundResults.totalAmount - simpleResults.totalAmount;
+            if (difference > 0) {
+                comparisonGrid.innerHTML += `
+                    <div style="grid-column: 1 / -1; text-align: center; margin-top: 15px; padding: 15px; background: #ffebee; border-radius: 8px;">
+                        <strong>Compound interest costs ₹${difference.toLocaleString('en-IN')} more than simple interest</strong>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize with default calculation
+        window.onload = function() {
+            calculateLoan();
+        };
+    </script>
+</body>
+</html>
